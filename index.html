@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legge di Bilancio 2026 - Studio BDZ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        // Knowledge base COMPLETO con tutte le novità
+        const knowledgeBase = {
+          categories: [
+            {
+              id: 'irpef',
+              title: 'IRPEF e Imposte Personali',
+              icon: '💰',
+              color: 'bg-blue-500',
+              items: [
+                {
+                  title: 'Riduzione aliquota IRPEF secondo scaglione',
+                  summary: 'Aliquota ridotta dal 35% al 33% per redditi 28.000-50.000€',
+                  details: `La legge di bilancio 2026 prevede la riduzione dal 35% al 33% dell'aliquota IRPEF del secondo scaglione (redditi 28.000-50.000€).
+
+Nuova struttura aliquote IRPEF:
+- 23% per redditi fino a 28.000€
+- 33% (prima 35%) per redditi da 28.000€ a 50.000€
+- 43% per redditi oltre 50.000€
+
+Risparmio fiscale: Massimo 440€ annui
+
+Decorrenza: Dal periodo d'imposta 2026`,
+                  keywords: ['irpef', 'aliquota', 'scaglione', 'riduzione', '33%', '35%', 'reddito', 'risparmio', '440']
+                },
+                {
+                  title: 'Riduzione detrazioni per redditi oltre 200.000€',
+                  summary: 'Riduzione di 440€ delle detrazioni IRPEF per oneri',
+                  details: `Per neutralizzare il risparmio dalla riduzione dell'aliquota IRPEF, dal 2026 chi ha reddito superiore a 200.000€ subisce una riduzione di 440€ sulle detrazioni IRPEF.
+
+Oneri interessati dalla riduzione:
+- Oneri detraibili al 19% (escluse spese sanitarie)
+- Erogazioni liberali a partiti politici (26%)
+- Premi assicurazione eventi calamitosi (90%)
+
+Oneri NON interessati:
+- Detrazioni per familiari a carico
+- Recupero edilizio, ecobonus, sismabonus`,
+                  keywords: ['detrazioni', 'riduzione', '200000', 'oneri', 'spese', 'redditi alti']
+                }
+              ]
+            },
+            {
+              id: 'casa',
+              title: 'Bonus Casa e Immobili',
+              icon: '🏠',
+              color: 'bg-green-500',
+              items: [
+                {
+                  title: 'Bonus casa - Proroga aliquote 2026',
+                  summary: 'Aliquota 50% per abitazione principale, 36% per altri',
+                  details: `Prorogate per il 2026 le aliquote bonus casa:
+
+Aliquota maggiorata 50%:
+- Abitazione principale
+- Spese 1.1.2025 - 31.12.2026
+- Limite: 96.000€
+- Nel 2027 scende al 36%
+
+Aliquota ordinaria 36%:
+- Altri immobili
+- Spese 1.1.2025 - 31.12.2026
+- Limite: 96.000€
+- Nel 2027 scende al 30%`,
+                  keywords: ['bonus casa', 'ristrutturazione', '50%', '36%', 'abitazione principale', 'recupero edilizio']
+                },
+                {
+                  title: 'Ecobonus e Sismabonus 2026',
+                  summary: 'Aliquote allineate al bonus casa',
+                  details: `Le aliquote ecobonus e sismabonus sono allineate al bonus casa:
+
+Per abitazioni principali:
+- 50% per spese 2025-2026
+- 36% per spese 2027
+
+Per altri immobili:
+- 36% per spese 2025-2026
+- 30% per spese 2027
+
+Include:
+- Riqualificazione energetica
+- Riduzione rischio sismico
+- Sismabonus acquisti`,
+                  keywords: ['ecobonus', 'sismabonus', 'efficienza energetica', 'risparmio energetico', 'sisma', 'energetico']
+                },
+                {
+                  title: 'Bonus mobili - Proroga 2026',
+                  summary: 'Detrazione 50% fino a 5.000€',
+                  details: `Prorogata per il 2026 la detrazione IRPEF 50% per acquisto mobili e grandi elettrodomestici.
+
+Requisiti:
+- Spese sostenute 1.1.2026 - 31.12.2026
+- Interventi recupero edilizio dall'1.1.2025
+- Limite massimo: 5.000€
+
+Beni agevolabili:
+- Mobili nuovi
+- Grandi elettrodomestici classe energetica adeguata`,
+                  keywords: ['bonus mobili', 'elettrodomestici', '5000', 'arredamento', 'mobili']
+                },
+                {
+                  title: 'Locazioni brevi - Presunzione imprenditorialità',
+                  summary: 'Solo 2 appartamenti per cedolare secca, da 3 scatta partita IVA',
+                  details: `STRETTA sulle locazioni brevi dal 2026:
+
+Soglia abbassata:
+- Prima: max 4 appartamenti
+- Dal 2026: max 2 appartamenti
+- Da 3 appartamenti: obbligo P.IVA
+
+Aliquote cedolare secca 2026:
+- 1 appartamento: 21%
+- 2 appartamenti: uno al 21%, altro al 26%
+- 3+ appartamenti: fuori cedolare
+
+Computo:
+- Solo contratti max 30 giorni
+- Esclusi contratti lunghi
+- Più contratti su stanze = 1 appartamento`,
+                  keywords: ['locazioni brevi', 'airbnb', 'cedolare secca', 'partita iva', 'imprenditorialità', '2 appartamenti', 'affitti brevi']
+                }
+              ]
+            },
+            {
+              id: 'lavoro',
+              title: 'Lavoro e Welfare',
+              icon: '👔',
+              color: 'bg-purple-500',
+              items: [
+                {
+                  title: 'Detassazione premi di risultato',
+                  summary: 'Imposta sostitutiva ridotta all\'1% (fino a 5.000€)',
+                  details: `Riduzione significativa imposta sostitutiva premi:
+
+Aliquote:
+- 2026-2027: 1% (prima 5%)
+- Limite: 5.000€ (prima 3.000€)
+
+Dividendi da azioni in sostituzione:
+- Proroga anche per 2026
+- Fino a 1.500€/anno: esenti 50% da IRPEF
+
+Beneficiari:
+- Dipendenti settore privato
+- Incrementi produttività, redditività, qualità`,
+                  keywords: ['premi risultato', 'produttività', 'detassazione', '1%', 'welfare aziendale', 'premi', 'bonus dipendenti']
+                },
+                {
+                  title: 'Imposta sostitutiva incrementi contrattuali',
+                  summary: 'Tassazione al 5% sugli aumenti da rinnovi CCNL 2026',
+                  details: `Nuova imposta sostitutiva solo per 2026:
+
+Caratteristiche:
+- Aliquota: 5%
+- Solo anno 2026
+- Aumenti da contratti rinnovati 1.1.2024 - 31.12.2026
+- Solo dipendenti settore privato
+
+Condizioni:
+- Reddito 2025 ≤ 33.000€
+- Facoltà di rinuncia da parte lavoratore`,
+                  keywords: ['incrementi contrattuali', 'rinnovo ccnl', '5%', 'imposta sostitutiva', 'aumenti stipendio', 'ccnl']
+                },
+                {
+                  title: 'Imposta sostitutiva trattamento accessorio',
+                  summary: 'Tassazione al 15% su straordinari, turni, festivi (solo 2026)',
+                  details: `Imposta sostitutiva 15% sul trattamento accessorio (solo 2026):
+
+Somme agevolate:
+- Maggiorazioni lavoro notturno
+- Maggiorazioni lavoro festivi
+- Indennità di turno
+
+Esclusioni:
+- Compensi sostitutivi retribuzione ordinaria
+
+Requisiti:
+- Reddito 2025 ≤ 40.000€
+- Limite annuo: 1.500€
+- Facoltà di rinuncia`,
+                  keywords: ['straordinari', 'turni', 'festivi', 'notturno', '15%', 'trattamento accessorio', 'lavoro notturno']
+                },
+                {
+                  title: 'Imposta sostitutiva straordinario infermieri',
+                  summary: 'Estensione al 5% anche per strutture private',
+                  details: `Estensione imposta sostitutiva 5% straordinari infermieri:
+
+Novità 2026:
+- Estesa a strutture private accreditate
+- Estesa a RSA e strutture socio-assistenziali
+- Aliquota: 5%
+
+Decorrenza:
+- Compensi erogati dall'anno 2026`,
+                  keywords: ['infermieri', 'straordinario', 'sanitari', 'RSA', '5%', 'healthcare', 'sanità']
+                },
+                {
+                  title: 'Trattamento integrativo speciale turismo',
+                  summary: '15% in più su straordinari (gennaio-settembre 2026)',
+                  details: `Bonus speciale 15% per lavoratori turismo:
+
+Settori:
+- Somministrazione alimenti e bevande
+- Comparto turismo
+- Stabilimenti termali
+
+Bonus:
+- +15% su retribuzioni lavoro notturno
+- +15% su straordinari festivi
+- Periodo: 1.1.2026 - 30.9.2026
+
+Requisiti:
+- Reddito 2025 ≤ 40.000€
+- Su richiesta lavoratore
+- Non concorre a reddito`,
+                  keywords: ['turismo', 'ristorazione', 'hotel', 'bar', 'ristorante', '15%', 'festivi', 'stagionali']
+                },
+                {
+                  title: 'Buoni pasto elettronici - Aumento esenzione',
+                  summary: 'Soglia non imponibilità da 8€ a 10€',
+                  details: `Incremento soglia esenzione buoni pasto:
+
+Nuove soglie:
+- Buoni elettronici: 10€ (prima 8€)
+- Buoni cartacei: 4€ (invariata)
+
+Beneficio fiscale:
+- Importi entro soglia non concorrono a reddito
+- Nessuna ritenuta IRPEF`,
+                  keywords: ['buoni pasto', 'ticket restaurant', '10 euro', 'elettronici', 'ticket']
+                },
+                {
+                  title: 'Previdenza complementare - Aumento deducibilità',
+                  summary: 'Limite deducibilità da 5.164,57€ a 5.300€',
+                  details: `Incremento deduzione contributi previdenza complementare:
+
+Nuovo limite:
+- Deducibilità: 5.300€ annui (prima 5.164,57€)
+- Fondi pensione, PIP, forme complementari
+
+Contributi deducibili:
+- Versati dal lavoratore
+- Versati dal datore
+- Volontari o da contratti collettivi
+
+Decorrenza:
+- Periodo d'imposta 2026`,
+                  keywords: ['previdenza complementare', 'fondo pensione', 'deduzione', '5300', 'pip', 'pensione']
+                }
+              ]
+            },
+            {
+              id: 'imprese',
+              title: 'Imprese e Investimenti',
+              icon: '🏭',
+              color: 'bg-orange-500',
+              items: [
+                {
+                  title: 'Iper-ammortamenti 4.0 e 5.0',
+                  summary: 'Maggiorazione fino al 180% per investimenti',
+                  details: `Nuovi iper-ammortamenti:
+
+Periodo: 1.1.2026 - 30.9.2028
+
+Beni:
+- Materiali e immateriali 4.0
+- Autoproduzione energia rinnovabile
+- Prodotti UE/SEE
+
+Maggiorazioni:
+- 180% fino a 2,5 milioni €
+- 100% da 2,5 a 10 milioni €
+- 50% da 10 a 20 milioni €
+
+Accesso:
+- Comunicazione GSE`,
+                  keywords: ['iper ammortamento', 'industria 4.0', 'transizione 5.0', 'beni strumentali', 'investimenti', '180%', 'industria']
+                },
+                {
+                  title: 'Credito imposta energivore',
+                  summary: 'Fino al 45% per investimenti che riducono consumi',
+                  details: `Credito d'imposta per imprese energivore:
+
+Beneficiari:
+- Imprese energivore iscritte CSEA
+
+Investimenti:
+- Beni materiali e immateriali tipo A e B
+- Effettuati nel 2025
+
+Aliquote:
+- 35% fino a 10 milioni €
+- 5% da 10 a 50 milioni €
+- Fino al 45% con riduzioni significative consumi
+
+Dotazione:
+- 10 milioni € per 2026`,
+                  keywords: ['energivore', 'energia', 'consumi', 'credito imposta', 'efficienza', 'energetico']
+                },
+                {
+                  title: 'Credito imposta 4.0 - Rifinanziamento',
+                  summary: '1.300 milioni per incremento limiti',
+                  details: `Rifinanziamento credito investimenti 4.0:
+
+Fondo:
+- 1.300 milioni € per 2026
+- Per incremento limiti spesa
+
+Destinazione:
+- Investimenti prima del 31.12.2025`,
+                  keywords: ['credito imposta', '4.0', 'rifinanziamento', 'investimenti']
+                },
+                {
+                  title: 'Nuova Sabatini - Rifinanziamento',
+                  summary: '200 milioni 2026, 450 milioni 2027',
+                  details: `Incremento autorizzazione Nuova Sabatini:
+
+Dotazione:
+- 200 milioni € anno 2026
+- 450 milioni € anno 2027
+
+Finalità:
+- Finanziamenti agevolati PMI
+- Acquisto beni strumentali
+- Leasing finanziario`,
+                  keywords: ['sabatini', 'finanziamenti', 'pmi', 'beni strumentali', 'leasing']
+                },
+                {
+                  title: 'Modifiche dividendi e plusvalenze su partecipazioni',
+                  summary: 'Requisiti: 5% capitale o 500k€ valore',
+                  details: `Nuove condizioni esclusione parziale:
+
+Requisiti alternativi (dal 2026):
+- Partecipazione ≥ 5% capitale
+- OPPURE valore fiscale ≥ 500.000€
+
+Esclusione parziale dividendi:
+- Persone fisiche/società persone: 60%, 50,28%, 41,86%
+- Società capitali: 95%
+
+Decorrenza:
+- Dividendi: deliberati dall'1.1.2026
+- Plusvalenze: cessioni dall'1.1.2026
+
+Se requisiti NON rispettati:
+- Integralmente imponibili`,
+                  keywords: ['dividendi', 'plusvalenze', 'partecipazioni', 'pex', '5%', '500000', 'participation exemption']
+                },
+                {
+                  title: 'Frazionamento plusvalenze - Eliminazione',
+                  summary: 'Plusvalenze tassate interamente nell\'anno',
+                  details: `Eliminata rateizzazione plusvalenze dal 2026:
+
+Regola generale:
+- Tassate per intero anno realizzo
+- Eliminata rateizzazione in 5 anni
+- Beni strumentali, patrimoniali, partecipazioni
+
+Eccezioni - Rateizzazione possibile:
+- Cessioni azienda/rami (max 5 anni)
+- Requisito: possesso ≥ 3 anni
+
+Decorrenza:
+- Plusvalenze realizzate dal 2026`,
+                  keywords: ['plusvalenze', 'rateizzazione', 'frazionamento', 'cessione azienda', 'beni strumentali']
+                },
+                {
+                  title: 'Assegnazione agevolata beni ai soci',
+                  summary: 'Imposta sostitutiva 8% (10,5% per società comodo)',
+                  details: `Riproposta assegnazione agevolata:
+
+Operazioni:
+- Assegnazione immobili
+- Cessione beni mobili registrati
+- Trasformazione in società semplice
+
+Termine: 30.9.2026
+
+Imposte sostitutive:
+- 8% su plusvalenze (10,5% società comodo)
+- 13% su riserve sospensione imposta
+
+Versamento:
+- 60% entro 30.9.2026
+- 40% entro 30.11.2026`,
+                  keywords: ['assegnazione beni', 'cessione soci', 'trasformazione', '8%', 'società semplice']
+                },
+                {
+                  title: 'Estromissione immobile imprenditore',
+                  summary: 'Imposta sostitutiva 8% su plusvalenza',
+                  details: `Riapertura estromissione agevolata:
+
+Requisiti:
+- Imprenditore in attività al 31.10.2025
+- Imprenditore in attività all'1.1.2026
+
+Immobili:
+- Strumentali per natura
+- Strumentali per destinazione
+- Posseduti al 31.10.2025
+
+Agevolazione:
+- Imposta sostitutiva 8%
+
+Adempimenti:
+- Operazione 1.1.2026 - 31.5.2026
+- 60% imposta entro 30.11.2026
+- 40% entro 30.6.2027`,
+                  keywords: ['estromissione', 'immobile', 'imprenditore individuale', 'strumentale', '8%']
+                },
+                {
+                  title: 'Affrancamento straordinario riserve',
+                  summary: 'Imposta sostitutiva 10% su riserve',
+                  details: `Affrancamento riserve in sospensione:
+
+Riserve affrancabili:
+- Tutte le riserve sospensione imposta
+- Esistenti al 31.12.2024
+- Fino a importo residuo al 31.12.2025
+
+Imposta sostitutiva:
+- Aliquota: 10%
+- Sostitutiva IRES, IRPEF, IRAP
+- Liquidata in dichiarazione 2025
+
+Versamento:
+- Obbligatoriamente 4 rate uguali
+- Prima rata: termine saldo 2025
+
+Effetto:
+- Riserve diventano ordinarie
+- Distribuibili senza ulteriori oneri`,
+                  keywords: ['affrancamento', 'riserve', 'sospensione imposta', '10%', 'distribuzione utili']
+                },
+                {
+                  title: 'Deducibilità rettifiche intermediari finanziari',
+                  summary: 'Deduzione in 5 anni per crediti 1° e 2° stadio',
+                  details: `Regime transitorio deducibilità svalutazioni:
+
+Ambito:
+- Intermediari finanziari
+- Svalutazioni crediti verso clientela
+- Primo e secondo stadio rischio
+
+Deducibilità:
+- Esercizio imputazione a bilancio
+- + 4 esercizi successivi
+- Totale 5 anni
+
+Decorrenza:
+- 2026-2029 per soggetti solari
+
+DTA:
+- Non trasformabili in crediti`,
+                  keywords: ['banche', 'intermediari finanziari', 'crediti', 'svalutazioni', 'DTA', 'IFRS 9']
+                },
+                {
+                  title: 'Regime forfetario - Limite reddito dipendente',
+                  summary: 'Confermato a 35.000€ per 2026',
+                  details: `Proroga limite reddito dipendente:
+
+Causa esclusione:
+- Redditi lavoro dipendente anno precedente > soglia
+- Soglia 2026: 35.000€ (confermata)
+
+Decorrenza:
+- Per applicare regime nel 2026
+- Considerare redditi 2025
+- Se > 35.000€: no forfetario 2026`,
+                  keywords: ['forfetario', 'flat tax', '35000', 'reddito dipendente', 'partita iva']
+                }
+              ]
+            },
+            {
+              id: 'fiscalita',
+              title: 'Altre Novità Fiscali',
+              icon: '📊',
+              color: 'bg-red-500',
+              items: [
+                {
+                  title: 'Rideterminazione costo fiscale partecipazioni',
+                  summary: 'Imposta sostitutiva aumentata al 21%',
+                  details: `Aumento aliquota affrancamento:
+
+Novità:
+- Imposta sostitutiva: 21% (prima 18%)
+- Solo per partecipazioni
+- Terreni: resta 18%
+
+Decorrenza:
+- Rivalutazioni all'1.1.2026
+- Perfezionate entro 30.11.2026
+
+Valutazione convenienza:
+- Conveniente quando plusvalenza > 80,77% valore normale`,
+                  keywords: ['affrancamento', 'partecipazioni', 'rivalutazione', '21%', 'plusvalenza']
+                },
+                {
+                  title: 'Criptovalute - Stablecoins euro al 26%',
+                  summary: 'Aliquota ridotta per token ancorati a euro',
+                  details: `Regime speciale stablecoins euro:
+
+Aliquota agevolata:
+- 26% invece del 33%
+- Solo token moneta elettronica euro
+
+Requisiti:
+- Valore ancorato a euro
+- Fondi riserva 100% in attività euro
+- Presso soggetti autorizzati UE
+
+Non costituisce realizzo:
+- Conversione euro ↔ token euro
+- Rimborso valore nominale
+
+Decorrenza: 1.1.2026`,
+                  keywords: ['criptovalute', 'crypto', 'stablecoin', 'token', '26%', 'euro digitale']
+                },
+                {
+                  title: 'Dichiarazione IVA omessa - Liquidazione automatica',
+                  summary: 'Comunicazione bonaria per recupero IVA',
+                  details: `Nuova procedura liquidazione IVA omessa:
+
+Fonte dati:
+- Fatturazione elettronica
+- Corrispettivi telematici
+- LIPE
+
+Procedura:
+1. Comunicazione bonaria Agenzia Entrate
+2. Liquidazione imposta + interessi
+3. Sanzione 120% (40% se paghi entro 60 gg)
+4. No dilazione, no compensazione
+5. Se non paghi: iscrizione a ruolo
+
+Decorrenza:
+- Da anno 2018
+
+NO crediti:
+- Solo debiti IVA`,
+                  keywords: ['IVA', 'omessa dichiarazione', 'liquidazione automatica', 'sanzione', 'fatturazione elettronica']
+                },
+                {
+                  title: 'Base imponibile IVA operazioni permutative',
+                  summary: 'Non più valore normale, ma costi complessivi',
+                  details: `Cambio criterio base imponibile:
+
+Vecchio criterio (fino 31.12.2025):
+- Valore normale beni/servizi
+
+Nuovo criterio (dall'1.1.2026):
+- Ammontare complessivo tutti i costi
+
+Ambito:
+- Operazioni permutative
+- Dazioni in pagamento`,
+                  keywords: ['IVA', 'permuta', 'dazione', 'base imponibile', 'valore normale']
+                },
+                {
+                  title: 'Contributo pacchi extra-UE modico valore',
+                  summary: '2€ per spedizioni da Paesi terzi fino a 150€',
+                  details: `Nuovo contributo spedizioni e-commerce extra-UE:
+
+Ambito:
+- Beni da Paesi non UE
+- Valore dichiarato ≤ 150€
+
+Contributo:
+- 2€ per spedizione
+- Riscosso da Uffici Dogane
+- All'importazione definitiva
+
+Finalità:
+- Copertura spese amministrative`,
+                  keywords: ['dogana', 'e-commerce', 'pacchi', 'cina', 'extra ue', 'contributo', 'amazon']
+                },
+                {
+                  title: 'Imposta premi RCA - Incremento',
+                  summary: 'Aliquota unificata al 12,5%',
+                  details: `Aumento imposta premi assicurazione:
+
+Nuove aliquote (dal 2026):
+- 12,5% per entrambi i rischi
+- Infortunio conducente
+- Assistenza stradale
+
+Decorrenza:
+- Contratti stipulati/rinnovati dall'1.1.2026
+
+Ristorno:
+- Assicurazioni devono riconoscere
+- Almeno 2/3 maggiore imposta`,
+                  keywords: ['RCA', 'assicurazione auto', 'infortunio conducente', 'assistenza stradale', '12.5%', 'rc auto']
+                },
+                {
+                  title: 'Contributo SSN premi assicurazioni',
+                  summary: 'Versamento acconto 85% entro 16 novembre',
+                  details: `Nuovo meccanismo acconto:
+
+Contributo SSN:
+- 10,5% su premi veicoli/natanti
+
+Acconto:
+- 85% importo anno precedente
+- Versamento entro 16 novembre
+- Scomputo da versamenti successivi`,
+                  keywords: ['SSN', 'contributo', 'assicurazioni', 'acconto', 'veicoli']
+                },
+                {
+                  title: 'Uso contanti turisti esteri - Soglia 5.000€',
+                  summary: 'Comunicazione solo per pagamenti oltre 5.000€',
+                  details: `Innalzamento soglia comunicazione:
+
+Vecchia soglia: 1.000€
+Nuova soglia: 5.000€
+
+Soggetti obbligati:
+- Commercianti al minuto
+- Agenzie viaggio
+
+Comunicazione:
+- All'Agenzia Entrate
+- Pagamenti contanti ricevuti
+- Da residenti fuori Italia`,
+                  keywords: ['contanti', 'turisti', 'stranieri', '5000', 'comunicazione', 'cash']
+                },
+                {
+                  title: 'Imposta di soggiorno - Incremento 2026',
+                  summary: 'Comuni possono aumentare fino a +2€',
+                  details: `Proroga facoltà incremento:
+
+Enti locali:
+- Comuni capoluogo Provincia
+- Unioni Comuni
+- Comuni località turistiche
+
+Incremento:
+- Fino a +2€ per notte
+- Facoltativo per ogni Comune
+
+Periodo: Anno 2026`,
+                  keywords: ['imposta soggiorno', 'tourist tax', 'comuni', 'turismo', '2 euro']
+                },
+                {
+                  title: 'Plastic tax e sugar tax - Rinvio 2027',
+                  summary: 'Ennesimo differimento all\'1.1.2027',
+                  details: `Ulteriore differimento imposte:
+
+Imposte rinviate:
+- Plastic tax (manufatti singolo impiego)
+- Sugar tax (bevande edulcorate)
+
+Decorrenza: 1.1.2027 (prima 1.1.2026)`,
+                  keywords: ['plastic tax', 'sugar tax', 'rinvio', 'bevande', 'plastica']
+                }
+              ]
+            },
+            {
+              id: 'riscossione',
+              title: 'Riscossione e Adempimenti',
+              icon: '⚖️',
+              color: 'bg-indigo-500',
+              items: [
+                {
+                  title: 'Rottamazione-quinquies',
+                  summary: 'Stralcio sanzioni e interessi per carichi fino al 31.12.2023',
+                  details: `Nuova rottamazione (quinta edizione):
+
+Carichi rottamabili:
+- Consegnati 1.1.2000 - 31.12.2023
+- Omessi versamenti dichiarati
+- Contributi INPS dichiarati
+- Violazioni Codice strada (solo interessi)
+
+NON rottamabili:
+- Accertamenti esecutivi
+- Avvisi liquidazione/recupero
+
+Benefici:
+- Stralcio sanzioni
+- Stralcio interessi mora
+- Stralcio compensi riscossione
+
+Domanda: Entro 30.4.2026
+
+Pagamento:
+- Unica soluzione entro 31.7.2026
+- Oppure max 54 rate (2026-2035)
+- Rate bimestrali con interessi 3%
+
+Decadenza:
+- Mancato pagamento 2 rate anche non consecutive`,
+                  keywords: ['rottamazione', 'cartelle', 'ruoli', 'stralcio', 'rate', 'sanatoria', 'definizione agevolata']
+                },
+                {
+                  title: 'Blocco pagamenti PA per professionisti',
+                  summary: 'Ogni pagamento PA soggetto a verifica carichi',
+                  details: `Stretta blocco pagamenti:
+
+Vecchia disciplina:
+- Verifica solo pagamenti > 5.000€
+- Blocco solo carichi ≥ 5.000€
+
+Nuova disciplina professionisti:
+- Verifica OGNI pagamento (senza soglia)
+- Blocco per OGNI carico (anche 100€)
+
+Soggetti:
+- Esercenti arti e professioni
+
+Procedura:
+- PA richiede verifica AdER
+- Risposta entro 5 giorni feriali
+- Se carichi: blocco e pignoramento
+
+Decorrenza:
+- Pagamenti da 15.6.2026`,
+                  keywords: ['blocco pagamenti', 'PA', 'professionisti', 'carichi pendenti', 'debiti', 'pubbliche amministrazioni']
+                },
+                {
+                  title: 'Divieto compensazione con ruoli scaduti',
+                  summary: 'Soglia abbassata da 100.000€ a 50.000€',
+                  details: `Stretta divieto compensazione:
+
+Vecchia soglia: 100.000€
+Nuova soglia: 50.000€
+
+Divieto:
+- Compensazione crediti fiscali vietata
+- Se debiti iscritti a ruolo > 50.000€
+- Anche da accertamenti esecutivi
+
+Eccezioni (compensazione permessa):
+- Dilazione in essere e in regola
+- Domanda rottamazione presentata
+
+Decorrenza:
+- Compensazioni dall'1.1.2026`,
+                  keywords: ['compensazione', 'F24', 'ruoli', '50000', 'debiti', 'crediti fiscali']
+                },
+                {
+                  title: 'Dati fatturazione elettronica per pignoramento',
+                  summary: 'AdER può usare dati fatture',
+                  details: `Uso dati fatturazione per riscossione:
+
+Novità:
+- AdER accede a dati fatture
+- Per procedure esecutive
+
+Dati disponibili:
+- Somma corrispettivi fatture emesse
+- Semestre precedente
+- Per singolo cessionario/committente
+- Da debitori iscritti a ruolo
+
+Finalità:
+- Individuare terzi da pignorare
+- Efficacia pignoramenti`,
+                  keywords: ['fatturazione elettronica', 'pignoramento', 'terzi', 'riscossione', 'debitori']
+                },
+                {
+                  title: 'Ritenuta transazioni B2B (dal 2028)',
+                  summary: 'Ritenuta 0,5% (2028) poi 1% (2029)',
+                  details: `Nuova ritenuta pagamenti B2B dal 2028:
+
+Ambito:
+- Prestazioni servizi tra imprese
+- Cessioni beni tra imprese
+- NO operazioni verso consumatori
+
+Aliquote:
+- 2028: 0,5%
+- Dal 2029: 1%
+- A titolo acconto imposte redditi
+
+Esclusi:
+- Aderenti concordato preventivo
+- Regime adempimento collaborativo
+- Bonifici agevolazioni fiscali`,
+                  keywords: ['ritenuta', 'B2B', 'transazioni', 'imprese', '2028', 'acconto']
+                }
+              ]
+            },
+            {
+              id: 'altro',
+              title: 'Altre Misure',
+              icon: '📚',
+              color: 'bg-teal-500',
+              items: [
+                {
+                  title: 'Contributi libri scolastici',
+                  summary: 'Fino a 1.500€ per famiglie ISEE ≤ 30.000€',
+                  details: `Nuovi contributi per famiglie studenti:
+
+Libri scolastici:
+- Fondo 20 milioni €/anno dal 2026
+- Acquisto libri anche digitali
+- Scuola secondaria secondo grado
+- ISEE ≤ 30.000€
+
+Scuole paritarie:
+- Contributo fino a 1.500€/studente 2026
+- Scuola paritaria secondaria primo grado
+- Primo biennio secondo grado
+- ISEE ≤ 30.000€
+- Scaglioni inversamente proporzionali
+- Dotazione: 20 milioni € 2026`,
+                  keywords: ['libri scolastici', 'scuole paritarie', 'contributi', 'famiglie', 'isee', 'studenti', 'scuola']
+                }
+              ]
+            }
+          ],
+          
+          faqs: [
+            {
+              question: "Quanto risparmio con la nuova IRPEF?",
+              answer: "La riduzione dell'aliquota IRPEF dal 35% al 33% per il secondo scaglione (redditi 28.000-50.000€) comporta un risparmio fiscale massimo di 440€ annui. Il risparmio effettivo dipende dal tuo reddito: è massimo per redditi pari o superiori a 50.000€, proporzionalmente minore per redditi inferiori.",
+              keywords: ['irpef', 'risparmio', 'aliquota', '440']
+            },
+            {
+              question: "Posso ancora rateizzare le plusvalenze?",
+              answer: "Dal 2026 la rateizzazione delle plusvalenze è eliminata per la maggior parte dei beni. Le plusvalenze su beni strumentali, patrimoniali e partecipazioni devono essere tassate interamente nell'anno di realizzo. L'unica eccezione rimane per le cessioni di azienda o rami d'azienda posseduti da almeno 3 anni, che possono ancora essere rateizzate in massimo 5 anni.",
+              keywords: ['plusvalenze', 'rateizzazione', 'frazionamento', 'cessione']
+            },
+            {
+              question: "Quanti appartamenti posso affittare con Airbnb senza partita IVA?",
+              answer: "Dal 2026 la soglia si abbassa drasticamente: puoi affittare massimo 2 appartamenti con contratti di locazione breve mantenendo la cedolare secca. Da 3 appartamenti in su scatta la presunzione di imprenditorialità con obbligo di apertura partita IVA. Per 1 appartamento applichi cedolare 21%, per 2 appartamenti uno al 21% e l'altro al 26%.",
+              keywords: ['airbnb', 'locazioni brevi', 'appartamenti', 'cedolare', 'partita iva']
+            },
+            {
+              question: "Cosa cambia per le detrazioni del bonus casa?",
+              answer: "Per il 2026 le aliquote bonus casa sono prorogate: 50% per interventi sull'abitazione principale (limite 96.000€) e 36% per altri immobili (limite 96.000€). Dal 2027 le aliquote scenderanno rispettivamente al 36% e al 30%. Il bonus mobili è prorogato con limite di 5.000€.",
+              keywords: ['bonus casa', 'ristrutturazione', '50%', '36%', 'detrazioni']
+            },
+            {
+              question: "Posso aderire alla rottamazione se sono decaduto dalle precedenti?",
+              answer: "Sì, puoi aderire alla rottamazione-quinquies anche se sei decaduto da precedenti rottamazioni (ter o quater), purché si tratti di carichi rientranti nella nuova definizione. Però attenzione: se al 30.9.2025 risultavi in regola con le rate della precedente rottamazione, devi continuare a pagarle e NON puoi accedere alla nuova.",
+              keywords: ['rottamazione', 'decadenza', 'cartelle', 'definizione agevolata']
+            },
+            {
+              question: "I premi di risultato sono ancora agevolati?",
+              answer: "Sì, anzi migliorati! Per il 2026 e 2027 l'imposta sostitutiva scende dall'attuale 5% all'1% e il limite sale da 3.000€ a 5.000€. Si applica su premi di risultato e partecipazione agli utili per dipendenti del settore privato collegati a incrementi di produttività.",
+              keywords: ['premi risultato', 'produttività', '1%', '5000', 'welfare']
+            },
+            {
+              question: "Come funziona la nuova imposta sugli straordinari?",
+              answer: "Per il solo anno 2026 sono previste DUE imposte sostitutive sugli straordinari: 1) 5% sugli incrementi da rinnovi contrattuali (reddito 2025 ≤ 33.000€); 2) 15% su maggiorazioni per lavoro notturno, festivi e turni (reddito 2025 ≤ 40.000€, limite 1.500€). Entrambe sono facoltative e sostituiscono IRPEF e addizionali.",
+              keywords: ['straordinari', 'imposta sostitutiva', '5%', '15%', 'turni']
+            },
+            {
+              question: "Devo pagare più tasse sui dividendi?",
+              answer: "Dipende. Dal 2026 per beneficiare dell'esclusione parziale dei dividendi devi avere una partecipazione di almeno il 5% del capitale OPPURE con valore fiscale di almeno 500.000€. Se non rispetti questi requisiti, i dividendi sono interamente imponibili. La novità si applica alle distribuzioni deliberate dall'1.1.2026.",
+              keywords: ['dividendi', 'partecipazioni', '5%', '500000', 'tassazione']
+            },
+            {
+              question: "Posso ancora usare il regime forfetario?",
+              answer: "Sì, ma per il 2026 è confermato che se hai percepito redditi di lavoro dipendente o assimilati superiori a 35.000€ nel 2025, non puoi applicare il regime forfetario nel 2026.",
+              keywords: ['forfetario', 'flat tax', '35000', 'partita iva', 'esclusione']
+            },
+            {
+              question: "Cosa sono gli iper-ammortamenti?",
+              answer: "Gli iper-ammortamenti 4.0 e 5.0 permettono di maggiorare il costo fiscale dei beni strumentali tecnologici: 180% fino a 2,5 milioni€, 100% da 2,5 a 10 milioni€, 50% da 10 a 20 milioni€. Vale per investimenti dall'1.1.2026 al 30.9.2028 in beni materiali/immateriali 4.0, beni per autoproduzione energia rinnovabile, prodotti in UE/SEE. Serve comunicazione telematica a GSE.",
+              keywords: ['iper ammortamenti', 'industria 4.0', 'beni strumentali', '180%', 'investimenti']
+            }
+          ]
+        };
+
+        function App() {
+          const [selectedCategory, setSelectedCategory] = useState(null);
+          const [selectedItem, setSelectedItem] = useState(null);
+          const [searchQuery, setSearchQuery] = useState('');
+          const [chatMessages, setChatMessages] = useState([]);
+          const [showChat, setShowChat] = useState(false);
+          const [chatInput, setChatInput] = useState('');
+
+          const searchInKnowledgeBase = (query) => {
+            if (!query || query.length < 3) return [];
+            
+            const lowerQuery = query.toLowerCase();
+            const results = [];
+            
+            knowledgeBase.categories.forEach(cat => {
+              cat.items.forEach(item => {
+                const keywordMatch = item.keywords.some(k => k.includes(lowerQuery));
+                const titleMatch = item.title.toLowerCase().includes(lowerQuery);
+                const summaryMatch = item.summary.toLowerCase().includes(lowerQuery);
+                
+                if (keywordMatch || titleMatch || summaryMatch) {
+                  results.push({
+                    ...item,
+                    category: cat.title,
+                    categoryIcon: cat.icon,
+                    categoryColor: cat.color,
+                    relevance: (keywordMatch ? 3 : 0) + (titleMatch ? 2 : 0) + (summaryMatch ? 1 : 0)
+                  });
+                }
+              });
+            });
+            
+            knowledgeBase.faqs.forEach(faq => {
+              const keywordMatch = faq.keywords.some(k => k.includes(lowerQuery));
+              const questionMatch = faq.question.toLowerCase().includes(lowerQuery);
+              const answerMatch = faq.answer.toLowerCase().includes(lowerQuery);
+              
+              if (keywordMatch || questionMatch || answerMatch) {
+                results.push({
+                  title: faq.question,
+                  summary: faq.answer.substring(0, 150) + '...',
+                  details: faq.answer,
+                  category: 'FAQ',
+                  categoryIcon: '💬',
+                  keywords: faq.keywords,
+                  relevance: (keywordMatch ? 3 : 0) + (questionMatch ? 2 : 0)
+                });
+              }
+            });
+            
+            return results.sort((a, b) => b.relevance - a.relevance).slice(0, 10);
+          };
+
+          const handleChatQuestion = (question) => {
+            const results = searchInKnowledgeBase(question);
+            
+            let response = '';
+            if (results.length === 0) {
+              response = `Non ho trovato informazioni specifiche su "${question}". Prova a riformulare o esplora le categorie.`;
+            } else if (results.length === 1) {
+              response = results[0].details;
+            } else {
+              response = `Ho trovato ${results.length} argomenti:\n\n`;
+              results.slice(0, 3).forEach((r, i) => {
+                response += `${i + 1}. ${r.title}\n${r.summary}\n\n`;
+              });
+            }
+            
+            setChatMessages(prev => [
+              ...prev,
+              { type: 'user', text: question },
+              { type: 'assistant', text: response, results: results.slice(0, 3) }
+            ]);
+          };
+
+          const filteredResults = useMemo(() => {
+            if (searchQuery.length < 3) return null;
+            return searchInKnowledgeBase(searchQuery);
+          }, [searchQuery]);
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
+                <div className="container mx-auto px-4 py-6">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <h1 className="text-3xl font-bold mb-2">Legge di Bilancio 2026</h1>
+                      <p className="text-blue-100">40+ novità fiscali e agevolative</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-blue-100">Studio BDZ</div>
+                      <div className="text-xs text-blue-200">Verona</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="container mx-auto px-4 py-8">
+                <div className="max-w-2xl mx-auto mb-8">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Cerca... (es: IRPEF, bonus casa, airbnb, iper ammortamento)"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full px-6 py-4 text-lg border-2 border-blue-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500"
+                    />
+                    <span className="absolute right-6 top-1/2 transform -translate-y-1/2 text-2xl">🔍</span>
+                  </div>
+                  
+                  {filteredResults && filteredResults.length > 0 && (
+                    <div className="mt-4 bg-white rounded-lg shadow-xl p-6 max-h-96 overflow-y-auto">
+                      <h3 className="font-bold text-lg mb-4">Trovati {filteredResults.length} risultati</h3>
+                      {filteredResults.map((result, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setSelectedItem(result);
+                            setSearchQuery('');
+                          }}
+                          className="p-4 mb-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-blue-50 transition border-l-4 border-blue-400"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">{result.categoryIcon}</span>
+                            <div className="flex-1">
+                              <div className="text-xs text-gray-500 mb-1">{result.category}</div>
+                              <div className="font-bold text-gray-800">{result.title}</div>
+                              <div className="text-sm text-gray-600 mt-1">{result.summary}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {selectedItem ? (
+                  <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
+                    <button
+                      onClick={() => setSelectedItem(null)}
+                      className="mb-4 text-blue-600 hover:text-blue-800 font-semibold"
+                    >
+                      ← Indietro
+                    </button>
+                    <div className="flex items-start gap-4 mb-6">
+                      <span className="text-4xl">{selectedItem.categoryIcon}</span>
+                      <div>
+                        <div className="text-sm text-gray-500 mb-1">{selectedItem.category}</div>
+                        <h2 className="text-3xl font-bold text-gray-800">{selectedItem.title}</h2>
+                        <p className="text-lg text-gray-600 mt-2">{selectedItem.summary}</p>
+                      </div>
+                    </div>
+                    <div className="prose max-w-none text-gray-700 whitespace-pre-line leading-relaxed">
+                      {selectedItem.details}
+                    </div>
+                  </div>
+                ) : selectedCategory ? (
+                  <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-xl p-8">
+                    <button
+                      onClick={() => setSelectedCategory(null)}
+                      className="mb-6 text-blue-600 hover:text-blue-800 font-semibold"
+                    >
+                      ← Torna alle categorie
+                    </button>
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className={`${selectedCategory.color} w-16 h-16 rounded-full flex items-center justify-center text-3xl text-white`}>
+                        {selectedCategory.icon}
+                      </div>
+                      <h2 className="text-3xl font-bold text-gray-800">{selectedCategory.title}</h2>
+                    </div>
+                    
+                    <div className="grid gap-4">
+                      {selectedCategory.items.map((item, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => setSelectedItem({...item, category: selectedCategory.title, categoryIcon: selectedCategory.icon})}
+                          className="p-6 bg-gray-50 rounded-lg cursor-pointer hover:bg-blue-50 transition border-l-4 border-blue-400"
+                        >
+                          <h4 className="font-bold text-lg text-gray-800 mb-2">{item.title}</h4>
+                          <p className="text-gray-600">{item.summary}</p>
+                          <div className="mt-3 text-sm text-blue-600 font-semibold">Clicca per dettagli →</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
+                      {knowledgeBase.categories.map((category) => (
+                        <div
+                          key={category.id}
+                          onClick={() => setSelectedCategory(category)}
+                          className="bg-white rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1"
+                        >
+                          <div className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center text-3xl text-white mb-4`}>
+                            {category.icon}
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-800 mb-2">{category.title}</h3>
+                          <p className="text-gray-600 text-sm">{category.items.length} novità</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="max-w-4xl mx-auto">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-6">💬 Domande Frequenti</h2>
+                      <div className="space-y-4">
+                        {knowledgeBase.faqs.map((faq, idx) => (
+                          <details key={idx} className="bg-white rounded-lg shadow p-6">
+                            <summary className="font-bold text-gray-800 text-lg cursor-pointer hover:text-blue-600">
+                              {faq.question}
+                            </summary>
+                            <div className="mt-4 text-gray-700 leading-relaxed">
+                              {faq.answer}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <button
+                onClick={() => setShowChat(!showChat)}
+                className="fixed bottom-6 right-6 bg-blue-600 text-white w-16 h-16 rounded-full shadow-2xl hover:bg-blue-700 transition flex items-center justify-center text-2xl z-50"
+              >
+                💬
+              </button>
+
+              {showChat && (
+                <div className="fixed bottom-24 right-6 w-96 bg-white rounded-lg shadow-2xl z-50 flex flex-col" style={{ height: '500px' }}>
+                  <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+                    <h3 className="font-bold">Assistente LdB 2026</h3>
+                    <button onClick={() => setShowChat(false)} className="text-xl hover:text-gray-200">×</button>
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {chatMessages.length === 0 && (
+                      <div className="text-gray-500 text-sm">
+                        Ciao! Fai una domanda su qualsiasi novità della Legge di Bilancio 2026. Prova con: "Quanto risparmio con la nuova IRPEF?" oppure "Cosa cambia per Airbnb?"
+                      </div>
+                    )}
+                    {chatMessages.map((msg, idx) => (
+                      <div key={idx} className={msg.type === 'user' ? 'text-right' : 'text-left'}>
+                        <div className={`inline-block p-3 rounded-lg max-w-[80%] ${msg.type === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'}`}>
+                          <div className="whitespace-pre-line text-sm">{msg.text}</div>
+                          {msg.results && msg.results.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {msg.results.map((r, i) => (
+                                <div
+                                  key={i}
+                                  onClick={() => {
+                                    setSelectedItem(r);
+                                    setShowChat(false);
+                                  }}
+                                  className="p-2 bg-white rounded border cursor-pointer hover:bg-blue-50 text-xs text-gray-800"
+                                >
+                                  <div className="font-semibold">{r.title}</div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="p-4 border-t">
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      if (chatInput.trim()) {
+                        handleChatQuestion(chatInput);
+                        setChatInput('');
+                      }
+                    }}>
+                      <input
+                        type="text"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder="Scrivi una domanda..."
+                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-gray-800 text-white py-8 mt-16">
+                <div className="container mx-auto px-4 text-center">
+                  <p className="mb-2">Studio Basso De Bortoli Zambelli - Verona</p>
+                  <p className="text-sm text-gray-400">Circolare Legge di Bilancio 2026 - Gennaio 2026</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
